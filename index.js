@@ -2,12 +2,13 @@
 // where your node app starts
 
 // init project
-var express = require('express');
-var app = express();
+require('dotenv').config();
+let express = require('express');
+let app = express();
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
-var cors = require('cors');
+let cors = require('cors');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -24,6 +25,20 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+
+app.get('/api/:date', (req, res) => {
+  let dateParam = req.params.date;
+
+  let isUnix = /^\d+$/.test(dateParam);
+
+  const response = {
+    unix: isUnix ? parseInt(dateParam) : new Date(dateParam).getTime(),
+    utc: isUnix ? new Date(parseInt(dateParam)).toUTCString() : new Date(dateParam).toUTCString()
+  };
+
+  res.json(response);
+
+})
 
 
 // Listen on port set in environment variable or default to 3000
